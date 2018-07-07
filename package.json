@@ -7,8 +7,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.4.1",
-    "react-native": "0.56.0"
+    "react": "^16.4.1",
+    "react-native": "^0.56.0",
+    "react-native-fs": "^2.10.14",
+    "react-native-table-component": "^1.1.8",
+    "xlsx": "^0.13.1"
   },
   "devDependencies": {
     "babel-jest": "23.2.0",

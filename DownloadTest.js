@@ -1,0 +1,56 @@
+/* @flow */
+
+import React, { Component } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import XLSX from "xlsx";
+import { writeFile, DocumentDirectoryPath } from "react-native-fs";
+
+const DDP = DocumentDirectoryPath + "/";
+const make_cols = refstr =>
+  Array.from({ length: XLSX.utils.decode_range(refstr).e.c + 1 }, (x, i) =>
+    XLSX.utils.encode_col(i)
+  );
+
+export default class DownloadTest extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [[1, 2, 3], [4, 5, 6]],
+      widthArr: [60, 60, 60],
+      cols: make_cols("A1:C2")
+    };
+    this.exportFile = this.exportFile.bind(this);
+  }
+
+  exportFile() {
+    const ws = XLSX.utils.aoa_to_sheet(this.state.data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "sheetjs");
+    const wbout = XLSX.write(wb, { type: "binary", bookType: "xlsx" });
+    const file = DDP + "sheetjs.xlsx";
+    writeFile(file, output(wbout), "ascii")
+      .then(res => {
+        Alert.alert("exportFile sucess", "Exported to" + file);
+      })
+      .catch(err => {
+        Alert.alert("exportFile error", "error message to" + err.message);
+      });
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>I'm the DownloadTest component</Text>
+        <TouchableOpacity>
+          <Text onPress={this.exportFile}> export data </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
