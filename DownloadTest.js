@@ -9,13 +9,15 @@ import {
   mkdir
 } from "react-native-fs";
 
+//ReactNative FS
 const DIR = mkdir(ExternalStorageDirectoryPath + "/ReactNative");
 const DDP = ExternalStorageDirectoryPath + "/ReactNative/";
 const output = str => str;
-const make_cols = refstr =>
-  Array.from({ length: XLSX.utils.decode_range(refstr).e.c + 1 }, (x, i) =>
-    XLSX.utils.encode_col(i)
-  );
+
+// const make_cols = refstr =>
+//   Array.from({ length: XLSX.utils.decode_range(refstr).e.c + 1 }, (x, i) =>
+//     XLSX.utils.encode_col(i)
+//   );
 
 export default class DownloadTest extends Component {
   constructor(props) {
@@ -41,11 +43,16 @@ export default class DownloadTest extends Component {
   exportFile() {
     const ws = XLSX.utils.aoa_to_sheet(this.state.data);
     const wt = XLSX.utils.aoa_to_sheet(this.state.hotelData);
+    //build new work book
     const wb = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(wb, ws, "sheetjs");
     XLSX.utils.book_append_sheet(wb, wt, "sheetTwojs");
+
+    //Write File
     const wbout = XLSX.write(wb, { type: "binary", bookType: "xlsx" });
     const file = DDP + "sheetjs.xlsx";
+
     writeFile(file, output(wbout), "ascii")
       .then(res => {
         Alert.alert("exportFile sucess", "Exported to" + file);
