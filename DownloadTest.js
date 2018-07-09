@@ -1,7 +1,8 @@
 /* @flow */
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { Button, Text } from "native-base";
 import XLSX from "xlsx";
 import {
   writeFile,
@@ -10,7 +11,6 @@ import {
 } from "react-native-fs";
 
 //ReactNative FS
-const DIR = mkdir(ExternalStorageDirectoryPath + "/ReactNative");
 const DDP = ExternalStorageDirectoryPath + "/ReactNative/";
 const output = str => str;
 
@@ -40,14 +40,24 @@ export default class DownloadTest extends Component {
     this.exportFile = this.exportFile.bind(this);
   }
 
+  componentWillMount() {
+    console.log("Component WILL MOUNT!");
+    const DIR = mkdir(ExternalStorageDirectoryPath + "/ReactNative");
+  }
+
   exportFile() {
     const ws = XLSX.utils.aoa_to_sheet(this.state.data);
+
     const wt = XLSX.utils.aoa_to_sheet(this.state.hotelData);
     //build new work book
     const wb = XLSX.utils.book_new();
 
+    // ws.write_formula("B6", "=SUM(B2:B4)");
     XLSX.utils.book_append_sheet(wb, ws, "sheetjs");
     XLSX.utils.book_append_sheet(wb, wt, "sheetTwojs");
+
+    ws["B6"].f = "B2 + B3";
+    console.log(ws);
 
     //Write File
     const wbout = XLSX.write(wb, { type: "binary", bookType: "xlsx" });
@@ -66,9 +76,9 @@ export default class DownloadTest extends Component {
     return (
       <View style={styles.container}>
         <Text>I'm the DownloadTest component</Text>
-        <TouchableOpacity>
-          <Text onPress={this.exportFile}> export data </Text>
-        </TouchableOpacity>
+        <Button onPress={this.exportFile}>
+          <Text>export data</Text>
+        </Button>
       </View>
     );
   }
@@ -76,6 +86,7 @@ export default class DownloadTest extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    alignItems: "center"
   }
 });
